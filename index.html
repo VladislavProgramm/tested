@@ -50,7 +50,7 @@
   <script>
     const outputDiv = document.getElementById("output");
 
-    function submitQuestion(event) {
+    async function submitQuestion(event) {
       event.preventDefault();
       const apiKeyInput = document.getElementById("apiKeyInput");
       const questionInput = document.getElementById("questionInput");
@@ -59,7 +59,9 @@
 
       if (apiKey && question) {
         // Отправить запрос к OpenAI и обработать ответ
-        sendOpenAIRequest(apiKey, question);
+        const answer = await sendOpenAIRequest(apiKey, question);
+        // Отобразить ответ
+        displayAnswer(answer);
       }
 
       questionInput.value = "";
@@ -90,17 +92,15 @@
         const responseData = await response.json();
         const answer = responseData.choices[0].text;
 
-        // Отобразить ответ
-        displayAnswer(answer);
+        return answer;
       } catch (error) {
         console.error(error);
+        return "";
       }
     }
 
     function displayAnswer(answer) {
-      const answerDiv = document.createElement("div");
-      answerDiv.innerHTML = answer;
-      outputDiv.appendChild(answerDiv);
+      outputDiv.innerHTML = answer;
     }
   </script>
 </body>
