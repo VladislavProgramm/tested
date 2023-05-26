@@ -1,110 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Веб-сайт с запросами к OpenAI</title>
+  <title>Запрос к OpenAI</title>
   <style>
     body {
       background-color: black;
       color: white;
       font-family: Arial, sans-serif;
-    }
-    
-    .container {
-      width: 600px;
-      margin: 100px auto;
       text-align: center;
     }
-    
-    .input-field {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
+
+    .container {
+      margin-top: 100px;
     }
-    
-    .input-field input[type="text"] {
+
+    input[type="text"] {
       width: 400px;
-      height: 40px;
-      font-size: 18px;
+      height: 30px;
       padding: 5px;
+      font-size: 16px;
     }
-    
-    .input-field button {
-      width: 60px;
-      height: 40px;
+
+    input[type="submit"] {
+      padding: 10px 20px;
       font-size: 18px;
-      background-color: transparent;
-      border: none;
+      background-color: #4CAF50;
       color: white;
+      border: none;
       cursor: pointer;
     }
-    
-    .response {
-      margin-top: 20px;
+
+    #output {
+      margin-top: 50px;
       text-align: left;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="input-field">
-      <input type="text" id="question-input" placeholder="Введите ваш вопрос">
-      <button onclick="submitQuestion()">&#9999;</button>
-    </div>
-    <div id="response-container"></div>
+    <form onsubmit="submitQuestion(event)">
+      <input type="text" id="apiKeyInput" placeholder="Введите API-ключ OpenAI">
+      <br>
+      <input type="text" id="questionInput" placeholder="Задайте вопрос для OpenAI">
+      <input type="submit" value="Отправить">
+    </form>
+    <div id="output"></div>
   </div>
 
   <script>
-    function submitQuestion() {
-      var questionInput = document.getElementById("question-input");
-      var question = questionInput.value;
-      
-      if (question.trim() === "") {
-        return;
+    const outputDiv = document.getElementById("output");
+
+    function submitQuestion(event) {
+      event.preventDefault();
+      const apiKeyInput = document.getElementById("apiKeyInput");
+      const questionInput = document.getElementById("questionInput");
+      const apiKey = apiKeyInput.value;
+      const question = questionInput.value;
+
+      if (apiKey && question) {
+        // Отправить запрос к OpenAI и обработать ответ
+        sendOpenAIRequest(apiKey, question);
       }
-      
+
       questionInput.value = "";
-      showQuestion(question);
-      getAnswer(question);
     }
-    
-    function showQuestion(question) {
-      var responseContainer = document.getElementById("response-container");
-      var questionElement = document.createElement("p");
-      questionElement.innerHTML = "<strong>Вопрос:</strong> " + question;
-      responseContainer.appendChild(questionElement);
+
+    async function sendOpenAIRequest(apiKey, question) {
+      const url = "https://api.openai.com/v1/engines/davinci-codex/completions";
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      };
+      const data = {
+        prompt: question,
+        max_tokens: 100
+      };
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error("Ошибка при отправке запроса к OpenAI.");
+        }
+
+        const responseData = await response.json();
+        const answer = responseData.choices[0].text;
+
+        // Отобразить ответ
+        displayAnswer(answer);
+      } catch (error) {
+        console.error(error);
+      }
     }
-    
-    function getAnswer(question) {
-      var apiKey = "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"; // Вставьте свой API ключ OpenAI сюда
-      
-      fetch("https://api.openai.com/v1/engines/davinci-codex/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + apiKey
-        },
-        body: JSON.stringify({
-          prompt: question,
-          max_tokens: 50
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        var answer = data.choices[0].text.trim();
-        showAnswer(answer);
-      })
-      .catch(error => {
-        console.error("Ошибка при получении ответа от OpenAI API:", error);
-      });
-    }
-    
-    function showAnswer(answer) {
-      var responseContainer = document.getElementById("response-container");
-      var responseElement = document.createElement("div");
-      responseElement.classList.add("response");
-      responseElement.innerHTML = "<strong>Ответ:</strong> " + answer;
-      responseContainer.appendChild(responseElement);
+
+    function displayAnswer(answer) {
+      const answerDiv = document.createElement("div");
+      answerDiv.innerHTML = answer;
+      outputDiv.appendChild(answerDiv);
     }
   </script>
 </body>
