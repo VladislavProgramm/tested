@@ -39,12 +39,9 @@
       cursor: pointer;
     }
     
-    .responses {
-      text-align: left;
-    }
-    
-    .responses p {
+    .response {
       margin-top: 20px;
+      text-align: left;
     }
   </style>
 </head>
@@ -54,7 +51,7 @@
       <input type="text" id="question-input" placeholder="Введите ваш вопрос">
       <button onclick="submitQuestion()">&#9999;</button>
     </div>
-    <div class="responses" id="response-container"></div>
+    <div id="response-container"></div>
   </div>
 
   <script>
@@ -108,9 +105,10 @@
     
     function showAnswer(answer) {
       var responseContainer = document.getElementById("response-container");
-      var answerElement = document.createElement("p");
-      answerElement.innerHTML = "<strong>Ответ:</strong> " + answer;
-      responseContainer.appendChild(answerElement);
+      var responseElement = document.createElement("div");
+      responseElement.classList.add("response");
+      responseElement.innerHTML = "<strong>Ответ:</strong> " + answer;
+      responseContainer.appendChild(responseElement);
     }
   </script>
 </body>
