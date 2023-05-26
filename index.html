@@ -76,12 +76,8 @@
     }
     
     function getAnswer(question) {
-      // Вставьте свой ключ доступа OpenAI API
-      var apiKey = "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";
+      var apiKey = "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"; // Вставьте свой API ключ OpenAI сюда
       
-      // Вставьте свою логику отправки запроса к OpenAI API и обработки ответа
-      
-      // Пример асинхронного запроса с использованием Fetch API
       fetch("https://api.openai.com/v1/engines/davinci-codex/completions", {
         method: "POST",
         headers: {
