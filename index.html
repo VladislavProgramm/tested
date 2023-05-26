@@ -38,11 +38,11 @@
 </head>
 <body>
   <div class="container">
-    <form onsubmit="submitQuestion(event)">
+    <form>
       <input type="text" id="apiKeyInput" placeholder="Введите API-ключ OpenAI">
       <br>
       <input type="text" id="questionInput" placeholder="Задайте вопрос для OpenAI">
-      <input type="submit" value="Отправить">
+      <button type="button" onclick="submitQuestion()">Отправить</button>
     </form>
     <div id="output"></div>
   </div>
@@ -50,8 +50,7 @@
   <script>
     const outputDiv = document.getElementById("output");
 
-    async function submitQuestion(event) {
-      event.preventDefault();
+    async function submitQuestion() {
       const apiKeyInput = document.getElementById("apiKeyInput");
       const questionInput = document.getElementById("questionInput");
       const apiKey = apiKeyInput.value;
