@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Веб-сайт с запросами к OpenAI</title>
+  <style>
+    /* Оставьте стили без изменений */
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      width: 600px;
+      margin: 100px auto;
+      text-align: center;
+    }
+    
+    .input-field {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .input-field input[type="text"] {
+      width: 400px;
+      height: 40px;
+      font-size: 18px;
+      padding: 5px;
+    }
+    
+    .input-field button {
+      width: 60px;
+      height: 40px;
+      font-size: 18px;
+      background-color: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+    
+    .responses {
+      text-align: left;
+    }
+    
+    .responses p {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="input-field">
+      <input type="text" id="question-input" placeholder="Введите ваш вопрос">
+      <button onclick="submitQuestion()">&#9999;</button>
+    </div>
+    <div class="responses" id="response-container"></div>
+  </div>
+
+  <script>
+    function submitQuestion() {
+      var questionInput = document.getElementById("question-input");
+      var question = questionInput.value;
+      
+      if (question.trim() === "") {
+        return;
+      }
+      
+      questionInput.value = "";
+      showQuestion(question);
+      getAnswer(question);
+    }
+    
+    function showQuestion(question) {
+      var responseContainer = document.getElementById("response-container");
+      var questionElement = document.createElement("p");
+      questionElement.innerHTML = "<strong>Вопрос:</strong> " + question;
+      responseContainer.appendChild(questionElement);
+    }
+    
+    function getAnswer(question) {
+      // Вставьте свой ключ доступа OpenAI API
+      var apiKey = "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";
+      
+      // Вставьте свою логику отправки запроса к OpenAI API и обработки ответа
+      
+      // Пример асинхронного запроса с использованием Fetch API
+      fetch("https://api.openai.com/v1/engines/davinci-codex/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify({
+          prompt: question,
+          max_tokens: 50
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        var answer = data.choices[0].text.trim();
+        showAnswer(answer);
+      })
+      .catch(error => {
+        console.error("Ошибка при получении ответа от OpenAI:", error);
+      });
+    }
+    
+    function showAnswer(answer) {
+      var responseContainer = document.getElementById("response-container");
+      var answerElement = document.createElement("p");
+      answerElement.innerHTML = "<strong>Ответ:</strong> " + answer;
+      responseContainer.appendChild(answerElement);
+    }
+  </script>
+</body>
+</html>
